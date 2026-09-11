@@ -68,7 +68,7 @@
 .mini-player__play-icon {
   width: 14px;
   height: 14px;
-  fill: #d2546a;
+  filter: brightness(0) saturate(100%); 
 }
 
 .mini-player__duration {

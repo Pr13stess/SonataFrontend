@@ -1,12 +1,13 @@
 import "./miniPlayer.css";
-import { ReactComponent as PlayIcon } from "../assets/play.svg";
-import { ReactComponent as PauseIcon } from "../assets/pause.svg";
+import playIcon from "../assets/play.svg";
+import pauseIcon from "../assets/pause.svg";
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
 function MiniPlayer({ song, isPlaying, onTogglePlay }) {
+  console.log("MiniPlayer isPlaying:", isPlaying);
   const hidden = useScrollDirection();
 
-  if (!song) return null; // belum ada lagu yang diputar
+  if (!song) return null;
 
   return (
     <div className={`mini-player ${hidden ? "mini-player--hidden" : ""}`}>
@@ -26,13 +27,13 @@ function MiniPlayer({ song, isPlaying, onTogglePlay }) {
         onClick={onTogglePlay}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
-        {isPlaying ? (
-          <PauseIcon className="mini-player__play-icon" />
-        ) : (
-          <PlayIcon className="mini-player__play-icon" />
-        )}
+        <img
+          key={isPlaying ? "pause" : "play"}
+          src={isPlaying ? pauseIcon : playIcon}
+          alt=""
+          className="mini-player__play-icon"
+        />
       </button>
-
       <span className="mini-player__duration">{song.duration}</span>
     </div>
   );
