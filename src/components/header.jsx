@@ -1,3 +1,5 @@
+import "./header.css";
+
 function Header({ onMenuClick, onSearchClick }) {
   return (
     <header className="header">

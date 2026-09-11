@@ -102,7 +102,7 @@ function SongList({ onSongPlay }) {
               ),
               cover:
                 song.artworkPath ||
-                "https://images.unsplash.com/photo-1511497584788-876760111969?w=200",
+                "https://unsplash.com/photos/a-person-in-a-garment-EpTIAbTlrg0",
             }}
             onPlay={onSongPlay}
           />

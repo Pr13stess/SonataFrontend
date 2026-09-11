@@ -1,302 +1,52 @@
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
+/* =========================
+   MINI PLAYER
+========================= */
+:root {
+  --color-bg: #fdf3ec;
+  --color-primary: #8b1e2e;
+  --color-primary-dark: #6e1723;
+  --color-text-muted: #9a9a9a;
+  --color-white: #fffaf5;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --font-title: 15px;
+  --font-subtitle: 12px;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f3eee9;
+  background: var(--color-bg);
 }
 
-button {
-  border: none;
-  outline: none;
-  font-family: inherit;
-  cursor: pointer;
-}
+.mini-player {
+  position: fixed;
 
-.home {
-  width: 100%;
-  min-height: 100vh;
-  background: #fffaf5;
-  color: #900c2b;
-}
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-
-/* =========================
-   HEADER
-========================= */
-
-.header {
-  width: 100%;
-  height: 58px;
+  z-index: 80;
 
   display: flex;
   align-items: center;
 
-  padding: 0 20px;
+  gap: 12px;
 
-  background: #fffaf5;
-}
+  height: 64px;
 
-.icon-button {
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  background: transparent;
-}
-
-
-/* =========================
-   HAMBURGER
-========================= */
-
-.hamburger-button {
-  flex-direction: column;
-  align-items: flex-start;
-
-  justify-content: center;
-
-  gap: 4px;
-
-  margin-right: 9px;
-}
-
-.hamburger-button span {
-  display: block;
-
-  height: 2px;
-
-  border-radius: 2px;
-
-  background: #900c2b;
-}
-
-.hamburger-button span:nth-child(1) {
-  width: 19px;
-}
-
-.hamburger-button span:nth-child(2) {
-  width: 14px;
-}
-
-.hamburger-button span:nth-child(3) {
-  width: 19px;
-}
-
-
-/* =========================
-   LOGO
-========================= */
-
-.logo {
-  flex: 1;
-
-  color: #900c2b;
-
-  font-size: 15px;
-  font-weight: 700;
-
-  letter-spacing: -0.3px;
-}
-
-.logo span {
-  font-size: 14px;
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-.search-button {
-  margin-left: auto;
-}
-
-.search-icon {
-  position: relative;
-
-  display: block;
-
-  width: 13px;
-  height: 13px;
-
-  border: 2px solid #900c2b;
-  border-radius: 50%;
-}
-
-.search-icon::after {
-  content: "";
-
-  position: absolute;
-
-  width: 6px;
-  height: 2px;
-
-  right: -5px;
-  bottom: -2px;
-
-  border-radius: 2px;
+  padding: 0 16px;
 
   background: #900c2b;
 
-  transform: rotate(45deg);
-  transform-origin: left center;
+  transform: translateY(0);
+
+  transition: transform 0.3s ease;
 }
 
-
-/* =========================
-   CATEGORIES
-========================= */
-
-.categories {
-  display: flex;
-  align-items: center;
-
-  gap: 22px;
-
-  height: 34px;
-
-  padding: 0 22px;
-
-  overflow-x: auto;
-
-  white-space: nowrap;
-
-  scrollbar-width: none;
+.mini-player--hidden {
+  transform: translateY(100%);
 }
 
-.categories::-webkit-scrollbar {
-  display: none;
-}
-
-.categories button {
-  flex-shrink: 0;
-
-  padding: 0;
-
-  background: transparent;
-
-  color: #c99ba4;
-
-  font-size: 14px;
-}
-
-.categories button.active {
-  color: #900c2b;
-  font-weight: 600;
-}
-
-
-/* =========================
-   SONG SECTION
-========================= */
-
-.song-section {
-  width: 100%;
-}
-
-
-/* =========================
-   TOOLBAR
-========================= */
-
-.toolbar {
-  height: 38px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 22px;
-}
-
-.sort-button {
-  display: flex;
-  align-items: center;
-
-  gap: 4px;
-
-  padding: 0;
-
-  background: transparent;
-
-  color: #ae707c;
-
-  font-size: 10px;
-}
-
-.sort-arrow {
-  font-size: 11px;
-}
-
-.shuffle-button {
-  width: 24px;
-  height: 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  background: transparent;
-
-  color: #ae707c;
-
-  font-size: 13px;
-}
-
-
-/* =========================
-   SONG LIST
-========================= */
-
-.song-list {
-  width: 100%;
-}
-
-.song-item {
-  width: 100%;
-
-  min-height: 52px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 4px 22px;
-
-  background: transparent;
-
-  text-align: left;
-
-  transition: background 0.15s ease;
-}
-
-.song-item:hover {
-  background: rgba(144, 12, 43, 0.04);
-}
-
-
-/* =========================
-   SONG COVER
-========================= */
-
-.song-cover {
+.mini-player__cover {
   width: 44px;
   height: 44px;
 
@@ -305,25 +55,22 @@ button {
   object-fit: cover;
 
   border-radius: 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-
-/* =========================
-   SONG INFO
-========================= */
-
-.song-info {
+.mini-player__info {
   min-width: 0;
 
   flex: 1;
-
-  padding-left: 11px;
 }
 
-.song-title {
+.mini-player__title {
+  margin: 0;
+
   overflow: hidden;
 
-  color: #8f0d2a;
+  color: #fffaf5;
 
   font-size: 12px;
   font-weight: 600;
@@ -332,12 +79,12 @@ button {
   text-overflow: ellipsis;
 }
 
-.song-artist {
-  margin-top: 2px;
+.mini-player__artist {
+  margin: 2px 0 0;
 
   overflow: hidden;
 
-  color: #c88f99;
+  color: rgba(255, 250, 245, 0.7);
 
   font-size: 9px;
 
@@ -345,94 +92,11 @@ button {
   text-overflow: ellipsis;
 }
 
-
-/* =========================
-   DURATION
-========================= */
-
-.song-duration {
-  margin-left: 8px;
-
-  color: #c88f99;
-
-  font-size: 9px;
-}
-
-
-/* =========================
-   SIDEBAR OVERLAY
-========================= */
-
-.sidebar-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 90;
-
-  background: rgba(0, 0, 0, 0.25);
-}
-
-
-/* =========================
-   SIDEBAR
-========================= */
-
-.sidebar {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  width: 250px;
-  height: 100vh;
-
-  z-index: 100;
-
-  padding: 22px 18px;
-
-  background: #fffaf5;
-
-  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.12);
-
-  transform: translateX(-100%);
-
-  transition: transform 0.25s ease;
-}
-
-.sidebar-open {
-  transform: translateX(0);
-}
-
-
-/* =========================
-   SIDEBAR HEADER
-========================= */
-
-.sidebar-header {
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 30px;
-}
-
-.sidebar-logo {
-  color: #900c2b;
-
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.sidebar-logo span {
-  font-size: 15px;
-}
-
-.sidebar-close {
+.mini-player__play {
   width: 32px;
   height: 32px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
@@ -440,64 +104,19 @@ button {
 
   padding: 0;
 
-  background: transparent;
+  border-radius: 50%;
+
+  background: #fffaf5;
 
   color: #900c2b;
-
-  font-size: 27px;
-  font-weight: 300;
-}
-
-
-/* =========================
-   SIDEBAR MENU
-========================= */
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-
-  gap: 6px;
-}
-
-.sidebar-menu-item {
-  width: 100%;
-  height: 45px;
-
-  display: flex;
-  align-items: center;
-
-  padding: 0 12px;
-
-  gap: 13px;
-
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #9c6873;
 
   font-size: 13px;
-
-  text-align: left;
 }
 
-.sidebar-menu-item:hover {
-  background: rgba(144, 12, 43, 0.05);
-}
+.mini-player__duration {
+  flex-shrink: 0;
 
-.sidebar-menu-item.active {
-  background: rgba(144, 12, 43, 0.08);
+  color: rgba(255, 250, 245, 0.7);
 
-  color: #900c2b;
-
-  font-weight: 600;
-}
-
-.menu-icon {
-  width: 20px;
-
-  text-align: center;
-
-  font-size: 16px;
+  font-size: 9px;
 }

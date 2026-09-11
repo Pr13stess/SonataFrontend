@@ -1,0 +1,62 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 20px;
+  background: var(--color-bg);
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hamburger-button span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  margin: 2px 0;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+}
+
+.logo span {
+  font-weight: 400;
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+}
+
+.search-icon::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: var(--color-primary);
+  bottom: -7px;
+  right: -3px;
+  transform: rotate(-45deg);
+}

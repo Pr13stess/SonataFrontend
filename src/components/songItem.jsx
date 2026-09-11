@@ -1,3 +1,5 @@
+import "./songItem.css";
+
 function SongItem({ song, onPlay }) {
   return (
     <button
@@ -8,6 +10,10 @@ function SongItem({ song, onPlay }) {
         className="song-cover"
         src={song.cover}
         alt={song.title}
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = "/default-cover.jpg";
+          }}
       />
 
       <div className="song-info">

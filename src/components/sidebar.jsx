@@ -1,3 +1,5 @@
+   import "./sidebar.css";
+
 function Sidebar({ open, onClose }) {
   return (
     <>
