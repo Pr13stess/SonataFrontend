@@ -1,6 +1,5 @@
-/* =========================
-   MINI PLAYER
-========================= */
+@import url('https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700;800&display=swap');
+
 :root {
   --color-bg: #fdf3ec;
   --color-primary: #8b1e2e;
@@ -15,6 +14,95 @@
 
 body {
   background: var(--color-bg);
+}
+
+.logo {
+  font-family: 'Afacad', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+}
+
+.sidebar-logo {
+  font-family: 'Afacad', sans-serif;
+}
+.categories {
+  display: flex;
+  gap: 20px;
+
+  overflow-x: auto;
+  white-space: nowrap;
+
+  padding: 0 16px 8px;
+
+  scrollbar-width: none; /* sembunyikan scrollbar di Firefox */
+}
+
+.categories::-webkit-scrollbar {
+  display: none; /* sembunyikan scrollbar di Chrome/Safari */
+}
+
+.categories button {
+  flex-shrink: 0;
+
+  background: none;
+  border: none;
+
+  font-family: inherit; /* pastikan TIDAK ikut Afacad */
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.categories button.active {
+  color: var(--color-primary);
+  font-weight: 700;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ini yang dorong shuffle ke kanan */
+
+  padding: 8px 16px;
+}
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: none;
+  border: none;
+  box-shadow: none;
+
+  padding: 0;
+
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.sort-arrow {
+  font-size: 13px;
+}
+
+.shuffle-button {
+  background: none;
+  border: none;
+  box-shadow: none;
+
+  padding: 0;
+
+  font-size: 16px;
+  color: var(--color-primary);
+  cursor: pointer;
 }
 
 .mini-player {
