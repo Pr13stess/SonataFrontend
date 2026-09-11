@@ -1,3 +1,5 @@
+import "./miniPlayer.css";
+
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
 function MiniPlayer({ song, isPlaying, onTogglePlay }) {

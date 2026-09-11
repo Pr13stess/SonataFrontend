@@ -33,27 +33,29 @@
 }
 
 .song-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-primary);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
-  color: var(--color-primary);
-  font-size: var(--font-title);
-  font-weight: 700;
 }
 
 .song-artist {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--color-text-muted);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
   margin-top: 2px;
-  color: var(--color-text-muted);
-  font-size: var(--font-subtitle);
 }
 
 .song-duration {
-  flex-shrink: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
   color: var(--color-text-muted);
-  font-size: var(--font-subtitle);
 }
