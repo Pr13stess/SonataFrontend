@@ -1,5 +1,6 @@
 import "./miniPlayer.css";
-
+import { ReactComponent as PlayIcon } from "../assets/play.svg";
+import { ReactComponent as PauseIcon } from "../assets/pause.svg";
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
 function MiniPlayer({ song, isPlaying, onTogglePlay }) {
@@ -25,7 +26,11 @@ function MiniPlayer({ song, isPlaying, onTogglePlay }) {
         onClick={onTogglePlay}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
-        {isPlaying ? "⏸" : "▶"}
+        {isPlaying ? (
+          <PauseIcon className="mini-player__play-icon" />
+        ) : (
+          <PlayIcon className="mini-player__play-icon" />
+        )}
       </button>
 
       <span className="mini-player__duration">{song.duration}</span>

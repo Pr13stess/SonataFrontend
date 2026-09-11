@@ -84,7 +84,7 @@ function Home() {
       <MiniPlayer
         song={currentSong}
         isPlaying={isPlaying}
-        onPlayPause={handlePlayPause}
+        onTogglePlay={handlePlayPause}
         onStop={handleStop}
       />
     </div>
