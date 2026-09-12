@@ -1,5 +1,6 @@
 import "./albumDetailView.css";
 import SongItem from "./songItem";
+import backIcon from "../assets/albumDetail/back.svg";
 
 function formatDuration(seconds) {
   if (!seconds) return "0:00";
@@ -13,8 +14,8 @@ function AlbumDetailView({ album, onBack, onSongPlay }) {
 
   return (
     <div className="album-detail">
-      <button className="album-detail__back" onClick={onBack}>
-        ← Kembali
+      <button className="album-detail__back" onClick={onBack} aria-label="Kembali">
+        <img src={backIcon} alt="" />
       </button>
 
       <div className="album-detail__header">
