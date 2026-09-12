@@ -6,6 +6,8 @@ import PlaylistView from "../components/playlistView";
 import SongList from "../components/songList";
 import MiniPlayer from "../components/miniPlayer";
 import NowPlaying from "../components/nowPlaying";
+import AlbumsView from "../components/albumsView";
+import AlbumDetailView from "../components/albumDetailView";
 
 import {
   playSong,
@@ -60,21 +62,30 @@ function Home() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [sleepTimerActive, setSleepTimerActive] = useState(false);
 
+  const [activeCategory, setActiveCategory] = useState("songs");
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+
   useEffect(() => {
     loadAllData();
   }, []);
 
   async function loadAllData() {
     try {
-      const [pls, songs] = await Promise.all([getPlaylists(), getSongs()]);
-      setPlaylists(pls || []);
+      const songs = await getSongs();
       setAllSongs(songs || []);
+    } catch (err) {
+      console.error("Gagal memuat lagu:", err);
+    }
+
+    try {
+      const pls = await getPlaylists();
+      setPlaylists(pls || []);
 
       if (pls && pls.length > 0 && selectedPlaylistId === null) {
         setSelectedPlaylistId(pls[0].id);
       }
     } catch (err) {
-      console.error("Gagal memuat data awal:", err);
+      console.error("Gagal memuat playlist:", err);
     }
   }
 
@@ -280,17 +291,50 @@ const handlePrevious = async () => {
           ) : (
             <div className="home-all-songs">
               <div className="categories">
-                <button className="active">Songs</button>
-                <button>Albums</button>
+                <button
+                  className={activeCategory === "songs" ? "active" : ""}
+                  onClick={() => {
+                    setActiveCategory("songs");
+                    setSelectedAlbum(null);
+                  }}
+                >
+                  Songs
+                </button>
+                <button
+                  className={activeCategory === "albums" ? "active" : ""}
+                  onClick={() => {
+                    setActiveCategory("albums");
+                    setSelectedAlbum(null);
+                  }}
+                >
+                  Albums
+                </button>
                 <button>Artist</button>
                 <button>Playlist</button>
                 <button>Recently</button>
               </div>
 
-              <SongList
-                searchQuery={searchQuery}
-                onSongPlay={handleSongPlay}
-              />
+              {activeCategory === "songs" && (
+                <SongList
+                  searchQuery={searchQuery}
+                  onSongPlay={handleSongPlay}
+                />
+              )}
+
+              {activeCategory === "albums" && !selectedAlbum && (
+                <AlbumsView
+                  songs={allSongs}
+                  onSelectAlbum={setSelectedAlbum}
+                />
+              )}
+
+              {activeCategory === "albums" && selectedAlbum && (
+                <AlbumDetailView
+                  album={selectedAlbum}
+                  onBack={() => setSelectedAlbum(null)}
+                  onSongPlay={handleSongPlay}
+                />
+              )}
             </div>
           )}
         </main>
