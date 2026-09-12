@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import SongItem from "./songItem";
 import { getSongs } from "../services/api";
 
-function SongList({ onSongPlay }) {
+function SongList({ onSongPlay, searchQuery = "" }) {
   const [songs, setSongs] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -11,15 +11,19 @@ function SongList({ onSongPlay }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadSongs();
-  }, []);
+    const timer = setTimeout(() => {
+      loadSongs(searchQuery);
+    }, 250);
 
-  async function loadSongs() {
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  async function loadSongs(query = "") {
     try {
       setLoading(true);
       setError(null);
 
-      const data = await getSongs();
+      const data = await getSongs(query);
 
       setSongs(data);
     } catch (error) {
@@ -90,23 +94,29 @@ function SongList({ onSongPlay }) {
       </div>
 
       <div className="song-list">
-        {sortedSongs.map((song) => (
-          <SongItem
-            key={song.id}
-            song={{
-              id: song.id,
-              title: song.title,
-              artist: song.artist,
-              duration: formatDuration(
-                song.durationSeconds
-              ),
-              cover:
-                song.artworkPath ||
-                "https://unsplash.com/photos/a-person-in-a-garment-EpTIAbTlrg0",
-            }}
-            onPlay={onSongPlay}
-          />
-        ))}
+        {sortedSongs.length > 0 ? (
+          sortedSongs.map((song) => (
+            <SongItem
+              key={song.id}
+              song={{
+                id: song.id,
+                title: song.title,
+                artist: song.artist,
+                duration: formatDuration(
+                  song.durationSeconds
+                ),
+                cover: song.artworkPath || "/default-cover.jpg",
+              }}
+              onPlay={onSongPlay}
+            />
+          ))
+        ) : (
+          <div className="song-empty">
+            {searchQuery
+              ? `Tidak ada lagu untuk "${searchQuery}"`
+              : "Belum ada lagu yang tersedia."}
+          </div>
+        )}
       </div>
     </section>
   );

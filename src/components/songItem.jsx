@@ -8,12 +8,12 @@ function SongItem({ song, onPlay }) {
     >
       <img
         className="song-cover"
-        src={song.cover}
+        src={song.cover || "/default-cover.jpg"}
         alt={song.title}
         onError={(e) => {
           e.target.onerror = null;
           e.target.src = "/default-cover.jpg";
-          }}
+        }}
       />
 
       <div className="song-info">

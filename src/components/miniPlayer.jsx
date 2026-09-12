@@ -12,9 +12,13 @@ function MiniPlayer({ song, isPlaying, onTogglePlay }) {
   return (
     <div className={`mini-player ${hidden ? "mini-player--hidden" : ""}`}>
       <img
-        src={song.cover}
+        src={song.cover || "/default-cover.jpg"}
         alt={song.title}
         className="mini-player__cover"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = "/default-cover.jpg";
+        }}
       />
 
       <div className="mini-player__info">
