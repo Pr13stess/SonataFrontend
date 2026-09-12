@@ -8,6 +8,8 @@ import MiniPlayer from "../components/miniPlayer";
 import NowPlaying from "../components/nowPlaying";
 import AlbumsView from "../components/albumsView";
 import AlbumDetailView from "../components/albumDetailView";
+import ArtistsView from "../components/artistsView";
+import ArtistDetailView from "../components/artistDetailView";
 
 import {
   playSong,
@@ -65,6 +67,8 @@ function Home() {
   const [activeCategory, setActiveCategory] = useState("songs");
   const [selectedAlbum, setSelectedAlbum] = useState(null);
 
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  
   useEffect(() => {
     loadAllData();
   }, []);
@@ -296,6 +300,7 @@ const handlePrevious = async () => {
                   onClick={() => {
                     setActiveCategory("songs");
                     setSelectedAlbum(null);
+                    setSelectedArtist(null);
                   }}
                 >
                   Songs
@@ -305,11 +310,21 @@ const handlePrevious = async () => {
                   onClick={() => {
                     setActiveCategory("albums");
                     setSelectedAlbum(null);
+                    setSelectedArtist(null);
                   }}
                 >
                   Albums
                 </button>
-                <button>Artist</button>
+                <button
+                  className={activeCategory === "artist" ? "active" : ""}
+                  onClick={() => {
+                    setActiveCategory("artist");
+                    setSelectedAlbum(null);
+                    setSelectedArtist(null);
+                  }}
+                >
+                  Artist
+                </button>
                 <button>Playlist</button>
                 <button>Recently</button>
               </div>
@@ -332,6 +347,21 @@ const handlePrevious = async () => {
                 <AlbumDetailView
                   album={selectedAlbum}
                   onBack={() => setSelectedAlbum(null)}
+                  onSongPlay={handleSongPlay}
+                />
+              )}
+
+              {activeCategory === "artist" && !selectedArtist && (
+                <ArtistsView
+                  songs={allSongs}
+                  onSelectArtist={setSelectedArtist}
+                />
+              )}
+
+              {activeCategory === "artist" && selectedArtist && (
+                <ArtistDetailView
+                  artist={selectedArtist}
+                  onBack={() => setSelectedArtist(null)}
                   onSongPlay={handleSongPlay}
                 />
               )}

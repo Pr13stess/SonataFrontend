@@ -1,0 +1,51 @@
+.artist-detail {
+  padding: 16px;
+}
+
+.artist-detail__back {
+  width: auto;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.artist-detail__back img {
+  width: auto;
+  height: 24px;
+}
+
+.artist-detail__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.artist-detail__cover {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.artist-detail__name {
+  margin: 12px 0 2px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.artist-detail__count {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
