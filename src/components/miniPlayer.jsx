@@ -3,14 +3,16 @@ import playIcon from "../assets/play.svg";
 import pauseIcon from "../assets/pause.svg";
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
-function MiniPlayer({ song, isPlaying, onTogglePlay }) {
-  console.log("MiniPlayer isPlaying:", isPlaying);
+function MiniPlayer({ song, isPlaying, onTogglePlay, onOpen }) {
   const hidden = useScrollDirection();
 
   if (!song) return null;
 
   return (
-    <div className={`mini-player ${hidden ? "mini-player--hidden" : ""}`}>
+    <div
+      className={`mini-player ${hidden ? "mini-player--hidden" : ""}`}
+      onClick={onOpen}
+    >
       <img
         src={song.cover || "/default-cover.jpg"}
         alt={song.title}
@@ -28,7 +30,10 @@ function MiniPlayer({ song, isPlaying, onTogglePlay }) {
 
       <button
         className="mini-player__play"
-        onClick={onTogglePlay}
+        onClick={(e) => {
+          e.stopPropagation();
+          onTogglePlay();
+        }}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
         <img

@@ -182,3 +182,35 @@ export async function removeSongFromPlaylist(playlistId, songId) {
   }
   return response.ok;
 }
+
+export async function seekSong(seconds) {
+  const response = await fetch(`${API_URL}/player/seek`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ seconds }),
+  });
+  if (!response.ok) throw new Error("Failed to seek song");
+  return response.json();
+}
+
+export async function setRepeat(enabled) {
+  const response = await fetch(`${API_URL}/player/repeat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ enabled }),
+  });
+  if (!response.ok) throw new Error("Failed to toggle repeat");
+  return response.json();
+}
+
+export async function nextSong() {
+  const response = await fetch(`${API_URL}/player/next`, { method: "POST" });
+  if (!response.ok) throw new Error("Failed to skip to next song");
+  return response.json();
+}
+
+export async function previousSong() {
+  const response = await fetch(`${API_URL}/player/previous`, { method: "POST" });
+  if (!response.ok) throw new Error("Failed to go to previous song");
+  return response.json();
+}

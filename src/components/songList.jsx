@@ -94,12 +94,12 @@ function SongList({ onSongPlay, searchQuery = "" }) {
                 id: song.id,
                 title: song.title,
                 artist: song.artist,
-                duration: formatDuration(
-                  song.durationSeconds
-                ),
+                duration: formatDuration(song.durationSeconds),
+                durationSeconds: song.durationSeconds,
                 cover: song.artworkPath || "/default-cover.jpg",
               }}
               onPlay={onSongPlay}
+              
             />
           ))
         ) : (

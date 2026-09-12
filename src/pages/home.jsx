@@ -5,12 +5,18 @@ import LibrarySidebar from "../components/librarySidebar";
 import PlaylistView from "../components/playlistView";
 import SongList from "../components/songList";
 import MiniPlayer from "../components/miniPlayer";
+import NowPlaying from "../components/nowPlaying";
 
 import {
   playSong,
   pauseSong,
   resumeSong,
   stopSong,
+  seekSong,
+  setRepeat,
+  shuffleSongs,
+  nextSong,
+  previousSong,
   getSongs,
   getPlaylists,
   createPlaylist,
@@ -25,9 +31,16 @@ function Home() {
 
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [sleepTimerActive, setSleepTimerActive] = useState(false);
 
   useEffect(() => {
     loadAllData();
@@ -39,7 +52,6 @@ function Home() {
       setPlaylists(pls || []);
       setAllSongs(songs || []);
 
-      // If there is at least one playlist, select the first one by default, or stay on All Songs
       if (pls && pls.length > 0 && selectedPlaylistId === null) {
         setSelectedPlaylistId(pls[0].id);
       }
@@ -92,6 +104,8 @@ function Home() {
       await playSong(song.id);
       setCurrentSong(song);
       setIsPlaying(true);
+      setCurrentTime(0);
+      setIsLiked(false); // reset like, belum ada backend untuk simpan status like per lagu
     } catch (error) {
       console.error("Gagal memainkan lagu:", error);
     }
@@ -120,12 +134,84 @@ function Home() {
     }
   };
 
-  // Find currently selected playlist
+  const handleSeek = async (seconds) => {
+    try {
+      await seekSong(seconds);
+      setCurrentTime(seconds);
+    } catch (error) {
+      console.error("Gagal seek lagu:", error);
+    }
+  };
+
+  const handleToggleRepeat = async () => {
+    try {
+      const next = !isRepeat;
+      await setRepeat(next);
+      setIsRepeat(next);
+    } catch (error) {
+      console.error("Gagal mengubah repeat:", error);
+    }
+  };
+
+  const handleToggleShuffle = async () => {
+    try {
+      const next = !isShuffled;
+      await shuffleSongs(next);
+      setIsShuffled(next);
+    } catch (error) {
+      console.error("Gagal mengubah shuffle:", error);
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      await nextSong();
+      // TODO: backend belum mengembalikan info lagu berikutnya,
+      // jadi currentSong di UI belum otomatis berpindah.
+    } catch (error) {
+      console.error("Gagal skip ke lagu berikutnya:", error);
+    }
+  };
+
+  const handlePrevious = async () => {
+    try {
+      await previousSong();
+      // TODO: sama seperti handleNext, menunggu backend expose info lagu aktif.
+    } catch (error) {
+      console.error("Gagal kembali ke lagu sebelumnya:", error);
+    }
+  };
+
+  const handleToggleLike = () => {
+    setIsLiked((prev) => !prev); // FE-only, belum ada endpoint like di backend
+  };
+
+  const handleToggleSleepTimer = () => {
+    setSleepTimerActive((prev) => !prev); // FE-only, belum ada endpoint sleep timer
+  };
+
+  // Timer lokal untuk progress seekbar selama lagu playing
+  useEffect(() => {
+    if (!isPlaying || !currentSong) return;
+
+    const interval = setInterval(() => {
+      setCurrentTime((t) => {
+        const max = currentSong.durationSeconds || 0;
+        return t < max ? t + 1 : t;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, currentSong]);
+
   const activePlaylist = playlists.find((p) => p.id === selectedPlaylistId);
+
+  const trackNumber = currentSong
+    ? allSongs.findIndex((s) => s.id === currentSong.id) + 1
+    : 0;
 
   return (
     <div className="home-layout">
-      {/* Top Header */}
       <Header
         onMenuClick={() => setSelectedPlaylistId(null)}
         isSearchOpen={isSearchOpen}
@@ -138,9 +224,7 @@ function Home() {
         }}
       />
 
-      {/* Main Split Layout */}
       <div className="home-body">
-        {/* Left Library Sidebar (Spotify-style) */}
         <LibrarySidebar
           playlists={playlists}
           selectedPlaylistId={selectedPlaylistId}
@@ -150,7 +234,6 @@ function Home() {
           isPlaying={isPlaying}
         />
 
-        {/* Center Main View */}
         <main className="home-main">
           {activePlaylist ? (
             <PlaylistView
@@ -182,12 +265,34 @@ function Home() {
         </main>
       </div>
 
-      {/* Bottom Player Bar */}
       <MiniPlayer
         song={currentSong}
         isPlaying={isPlaying}
         onTogglePlay={handlePlayPause}
         onStop={handleStop}
+        onOpen={() => setIsNowPlayingOpen(true)}
+      />
+
+      <NowPlaying
+        isOpen={isNowPlayingOpen}
+        song={currentSong}
+        isPlaying={isPlaying}
+        currentTime={currentTime}
+        onTogglePlay={handlePlayPause}
+        onClose={() => setIsNowPlayingOpen(false)}
+        onSeek={handleSeek}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        isLiked={isLiked}
+        onToggleLike={handleToggleLike}
+        isRepeat={isRepeat}
+        onToggleRepeat={handleToggleRepeat}
+        isShuffled={isShuffled}
+        onToggleShuffle={handleToggleShuffle}
+        sleepTimerActive={sleepTimerActive}
+        onToggleSleepTimer={handleToggleSleepTimer}
+        trackNumber={trackNumber}
+        totalTracks={allSongs.length}
       />
     </div>
   );
