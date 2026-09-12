@@ -1,9 +1,11 @@
 import "./miniPlayer.css";
 import playIcon from "../assets/play.svg";
 import pauseIcon from "../assets/pause.svg";
+import prevIcon from "../assets/miniPlayer/prev.svg";
+import nextIcon from "../assets/miniPlayer/next.svg";
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
-function MiniPlayer({ song, isPlaying, onTogglePlay, onOpen }) {
+function MiniPlayer({ song, isPlaying, onTogglePlay, onNext, onPrevious, onOpen }) {
   const hidden = useScrollDirection();
 
   if (!song) return null;
@@ -28,21 +30,43 @@ function MiniPlayer({ song, isPlaying, onTogglePlay, onOpen }) {
         <p className="mini-player__artist">{song.artist}</p>
       </div>
 
-      <button
-        className="mini-player__play"
-        onClick={(e) => {
-          e.stopPropagation();
-          onTogglePlay();
-        }}
-        aria-label={isPlaying ? "Pause" : "Play"}
-      >
-        <img
-          key={isPlaying ? "pause" : "play"}
-          src={isPlaying ? pauseIcon : playIcon}
-          alt=""
-          className="mini-player__play-icon"
-        />
-      </button>
+      <div className="mini-player__controls" onClick={(e) => e.stopPropagation()}>
+        {onPrevious && (
+          <button
+            className="mini-player__skip-btn"
+            onClick={onPrevious}
+            aria-label="Previous song"
+            title="Lagu Sebelumnya"
+          >
+            <img src={prevIcon} alt="Previous" className="mini-player__skip-icon" />
+          </button>
+        )}
+
+        <button
+          className="mini-player__play"
+          onClick={onTogglePlay}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          <img
+            key={isPlaying ? "pause" : "play"}
+            src={isPlaying ? pauseIcon : playIcon}
+            alt=""
+            className="mini-player__play-icon"
+          />
+        </button>
+
+        {onNext && (
+          <button
+            className="mini-player__skip-btn"
+            onClick={onNext}
+            aria-label="Next song"
+            title="Lagu Berikutnya"
+          >
+            <img src={nextIcon} alt="Next" className="mini-player__skip-icon" />
+          </button>
+        )}
+      </div>
+
       <span className="mini-player__duration">{song.duration}</span>
     </div>
   );

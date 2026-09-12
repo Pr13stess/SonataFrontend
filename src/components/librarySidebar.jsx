@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import "./librarySidebar.css";
 
 function LibrarySidebar({
@@ -8,6 +8,7 @@ function LibrarySidebar({
   onCreatePlaylist,
   currentSong = null,
   isPlaying = false,
+  isOpen = true,
 }) {
   const [filter, setFilter] = useState("all");
   const [isCreating, setIsCreating] = useState(false);
@@ -27,11 +28,10 @@ function LibrarySidebar({
   });
 
   return (
-    <aside className="library-sidebar">
+    <aside className={`library-sidebar ${!isOpen ? "library-sidebar--closed" : ""}`}>
       {/* Header */}
       <div className="library-header">
         <div className="library-header__title">
-          <span className="library-header__icon">📚</span>
           <span>Your Library</span>
         </div>
         <button

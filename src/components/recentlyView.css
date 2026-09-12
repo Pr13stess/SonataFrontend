@@ -1,0 +1,57 @@
+.recently-view {
+  padding: 16px;
+  padding-bottom: 90px;
+}
+
+.recently-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.recently-play-btn {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(139, 30, 46, 0.3);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.recently-play-btn:hover {
+  transform: scale(1.05);
+  background: var(--color-primary-dark);
+}
+
+.recently-play-btn__icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+.recently-title {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.recently-count {
+  margin: 4px 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.recently-songs {
+  display: flex;
+  flex-direction: column;
+}

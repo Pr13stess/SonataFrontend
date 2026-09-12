@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Header from "../components/header";
 import LibrarySidebar from "../components/librarySidebar";
@@ -10,6 +10,7 @@ import AlbumsView from "../components/albumsView";
 import AlbumDetailView from "../components/albumDetailView";
 import ArtistsView from "../components/artistsView";
 import ArtistDetailView from "../components/artistDetailView";
+import RecentlyView from "../components/recentlyView";
 
 import {
   playSong,
@@ -66,9 +67,18 @@ function Home() {
 
   const [activeCategory, setActiveCategory] = useState("songs");
   const [selectedAlbum, setSelectedAlbum] = useState(null);
-
   const [selectedArtist, setSelectedArtist] = useState(null);
-  
+
+  // Whether the left library sidebar is visible (toggled by the
+  // hamburger icon in the header, task #1)
+  const [isLibraryOpen, setIsLibraryOpen] = useState(true);
+
+  // The raw song list that Next/Previous should walk through. Set
+  // whenever a song is played from a specific context (all songs,
+  // an album, an artist, a playlist, or Recently) so skipping stays
+  // inside that same list instead of always jumping through allSongs.
+  const [queueSongs, setQueueSongs] = useState([]);
+
   useEffect(() => {
     loadAllData();
   }, []);
@@ -132,13 +142,28 @@ function Home() {
     }
   };
 
-  const handleSongPlay = async (song) => {
+  // `queue` (optional) is the raw list of songs this play action came
+  // from — e.g. all songs, an album's songs, an artist's songs, a
+  // playlist's songs, or the recently-played list. It's stored so
+  // Next/Previous know which list to walk through. If it's not passed,
+  // we simply keep whatever queue was already set.
+  const handleSongPlay = async (song, queue) => {
     try {
       await playSong(song.id);
       setCurrentSong(song);
       setIsPlaying(true);
       setCurrentTime(0);
       setIsLiked(false); // reset like, belum ada backend untuk simpan status like per lagu
+
+      if (queue) {
+        setQueueSongs(queue);
+      }
+
+      // Refresh allSongs in the background so lastPlayedAt updates and
+      // the Recently tab reflects the new play immediately.
+      getSongs()
+        .then((songs) => setAllSongs(songs || []))
+        .catch((err) => console.error("Gagal memperbarui daftar lagu:", err));
     } catch (error) {
       console.error("Gagal memainkan lagu:", error);
     }
@@ -196,44 +221,49 @@ function Home() {
     }
   };
 
-const handleNext = async () => {
-  if (!currentSong || allSongs.length === 0) return;
+  const handleNext = async () => {
+    // Walk through whichever list is currently queued (album, artist,
+    // playlist, recently-played...). Falls back to allSongs if nothing
+    // specific was queued yet.
+    const list = queueSongs.length > 0 ? queueSongs : allSongs;
+    if (!currentSong || list.length === 0) return;
 
-  try {
-    await nextSong(); // beri tahu backend supaya audio maju
+    try {
+      await nextSong(); // beri tahu backend supaya audio maju
 
-    const currentIndex = allSongs.findIndex((s) => s.id === currentSong.id);
-    const nextIndex = (currentIndex + 1) % allSongs.length;
-    const nextRawSong = allSongs[nextIndex];
+      const currentIndex = list.findIndex((s) => s.id === currentSong.id);
+      const nextIndex = (currentIndex + 1) % list.length;
+      const nextRawSong = list[nextIndex];
 
-    await handleSongPlay(toPlayableSong(nextRawSong));
-  } catch (error) {
-    console.error("Gagal skip ke lagu berikutnya:", error);
-  }
-};
+      await handleSongPlay(toPlayableSong(nextRawSong), list);
+    } catch (error) {
+      console.error("Gagal skip ke lagu berikutnya:", error);
+    }
+  };
 
-const handlePrevious = async () => {
-  if (!currentSong || allSongs.length === 0) return;
+  const handlePrevious = async () => {
+    const list = queueSongs.length > 0 ? queueSongs : allSongs;
+    if (!currentSong || list.length === 0) return;
 
-  try {
-    await previousSong(); // beri tahu backend supaya audio mundur
+    try {
+      await previousSong(); // beri tahu backend supaya audio mundur
 
-    const currentIndex = allSongs.findIndex((s) => s.id === currentSong.id);
-    const prevIndex = (currentIndex - 1 + allSongs.length) % allSongs.length;
-    const prevRawSong = allSongs[prevIndex];
+      const currentIndex = list.findIndex((s) => s.id === currentSong.id);
+      const prevIndex = (currentIndex - 1 + list.length) % list.length;
+      const prevRawSong = list[prevIndex];
 
-    await handleSongPlay(toPlayableSong(prevRawSong));
-  } catch (error) {
-    console.error("Gagal kembali ke lagu sebelumnya:", error);
-  }
-};
+      await handleSongPlay(toPlayableSong(prevRawSong), list);
+    } catch (error) {
+      console.error("Gagal kembali ke lagu sebelumnya:", error);
+    }
+  };
 
   const handleToggleLike = () => {
     setIsLiked((prev) => !prev); // FE-only, belum ada endpoint like di backend
   };
 
   const handleToggleSleepTimer = () => {
-    setSleepTimerActive((prev) => !prev); // FE-only, belum ada endpoint sleep timer
+    setSleepTimerActive((prev) => !prev); // FE-only, belum ada endpoint sleep timer di backend
   };
 
   // Timer lokal untuk progress seekbar selama lagu playing
@@ -252,6 +282,12 @@ const handlePrevious = async () => {
 
   const activePlaylist = playlists.find((p) => p.id === selectedPlaylistId);
 
+  // Songs that have actually been played before (lastPlayedAt set by the
+  // backend in MusicLibraryService.MarkPlayedAsync), newest first.
+  const recentSongs = [...allSongs]
+    .filter((s) => s.lastPlayedAt)
+    .sort((a, b) => new Date(b.lastPlayedAt) - new Date(a.lastPlayedAt));
+
   const trackNumber = currentSong
     ? allSongs.findIndex((s) => s.id === currentSong.id) + 1
     : 0;
@@ -259,7 +295,7 @@ const handlePrevious = async () => {
   return (
     <div className="home-layout">
       <Header
-        onMenuClick={() => setSelectedPlaylistId(null)}
+        onMenuClick={() => setIsLibraryOpen((prev) => !prev)}
         isSearchOpen={isSearchOpen}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -272,6 +308,7 @@ const handlePrevious = async () => {
 
       <div className="home-body">
         <LibrarySidebar
+          isOpen={isLibraryOpen}
           playlists={playlists}
           selectedPlaylistId={selectedPlaylistId}
           onSelectPlaylist={(id) => setSelectedPlaylistId(id)}
@@ -287,7 +324,12 @@ const handlePrevious = async () => {
               allAvailableSongs={allSongs}
               currentSong={currentSong}
               isPlaying={isPlaying}
-              onPlaySong={handleSongPlay}
+              onPlaySong={(song) =>
+                handleSongPlay(
+                  song,
+                  activePlaylist.songs.map((ps) => ps.song)
+                )
+              }
               onTogglePlay={handlePlayPause}
               onAddSong={handleAddSongToPlaylist}
               onRemoveSong={handleRemoveSongFromPlaylist}
@@ -326,13 +368,22 @@ const handlePrevious = async () => {
                   Artist
                 </button>
                 <button>Playlist</button>
-                <button>Recently</button>
+                <button
+                  className={activeCategory === "recently" ? "active" : ""}
+                  onClick={() => {
+                    setActiveCategory("recently");
+                    setSelectedAlbum(null);
+                    setSelectedArtist(null);
+                  }}
+                >
+                  Recently
+                </button>
               </div>
 
               {activeCategory === "songs" && (
                 <SongList
                   searchQuery={searchQuery}
-                  onSongPlay={handleSongPlay}
+                  onSongPlay={(song) => handleSongPlay(song, allSongs)}
                 />
               )}
 
@@ -347,7 +398,9 @@ const handlePrevious = async () => {
                 <AlbumDetailView
                   album={selectedAlbum}
                   onBack={() => setSelectedAlbum(null)}
-                  onSongPlay={handleSongPlay}
+                  onSongPlay={(song) =>
+                    handleSongPlay(song, selectedAlbum.songs)
+                  }
                 />
               )}
 
@@ -362,7 +415,19 @@ const handlePrevious = async () => {
                 <ArtistDetailView
                   artist={selectedArtist}
                   onBack={() => setSelectedArtist(null)}
-                  onSongPlay={handleSongPlay}
+                  onSongPlay={(song) =>
+                    handleSongPlay(song, selectedArtist.songs)
+                  }
+                />
+              )}
+
+              {activeCategory === "recently" && (
+                <RecentlyView
+                  songs={recentSongs}
+                  currentSong={currentSong}
+                  isPlaying={isPlaying}
+                  onSongPlay={(song) => handleSongPlay(song, recentSongs)}
+                  onTogglePlay={handlePlayPause}
                 />
               )}
             </div>
@@ -396,6 +461,10 @@ const handlePrevious = async () => {
         onToggleShuffle={handleToggleShuffle}
         sleepTimerActive={sleepTimerActive}
         onToggleSleepTimer={handleToggleSleepTimer}
+        onSearchClick={() => {
+          setIsNowPlayingOpen(false);
+          setIsSearchOpen(true);
+        }}
         trackNumber={trackNumber}
         totalTracks={allSongs.length}
       />

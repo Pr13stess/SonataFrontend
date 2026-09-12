@@ -26,6 +26,7 @@ function NowPlaying({
   currentTime,
   onTogglePlay,
   onClose,
+  onOpenSearch,
   onSeek,
   onNext,
   onPrevious,
@@ -56,7 +57,14 @@ function NowPlaying({
           <img src={nowPlayIcon} alt="Now Playing" />
         </div>
 
-        <button className="icon-button" aria-label="Search">
+        <button
+          className="icon-button"
+          onClick={() => {
+            if (onClose) onClose();
+            if (onOpenSearch) onOpenSearch();
+          }}
+          aria-label="Search"
+        >
           <img src={searchIcon} alt="" />
         </button>
       </div>

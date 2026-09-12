@@ -52,6 +52,35 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
+.mini-player__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.mini-player__skip-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.mini-player__skip-btn:hover {
+  transform: scale(1.15);
+  opacity: 0.9;
+}
+
+.mini-player__skip-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
 .mini-player__play {
   flex-shrink: 0;
   width: 32px;

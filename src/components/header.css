@@ -8,8 +8,8 @@
 }
 
 .icon-button {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
 
   display: flex;
   align-items: center;
@@ -21,13 +21,28 @@
   cursor: pointer;
 }
 
-.hamburger-button span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  margin: 2px 0;
-  background: var(--color-primary);
-  border-radius: 2px;
+.hamburger-button {
+  border: 1.5px solid rgba(139, 30, 46, 0.35);
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 5px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.hamburger-button:hover {
+  background: rgba(139, 30, 46, 0.08);
+  border-color: var(--color-primary);
+}
+
+.hamburger-button:active {
+  transform: scale(0.94);
 }
 
 .logo {
