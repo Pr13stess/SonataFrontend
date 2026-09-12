@@ -1,3 +1,5 @@
+import shuffleIcon from "../assets/shuffle.svg";
+import dscIcon from "../assets/dsc.svg";
 import { useEffect, useState } from "react";
 
 import SongItem from "./songItem";
@@ -74,22 +76,12 @@ function SongList({ onSongPlay, searchQuery = "" }) {
   return (
     <section className="song-section">
       <div className="toolbar">
-        <button
-          className="sort-button"
-          onClick={toggleSort}
-        >
-          <span>Title</span>
-
-          <span className="sort-arrow">
-            {sortOrder === "asc" ? "↑" : "↓"}
-          </span>
+        <button className="sort-button" onClick={toggleSort}>
+          <img src={dscIcon} className="sort-icon" alt="Sort by title" />
         </button>
 
-        <button
-          className="shuffle-button"
-          aria-label="Shuffle"
-        >
-          🔀
+        <button className="shuffle-button" aria-label="Shuffle">
+          <img src={shuffleIcon} className="shuffle-icon" alt="" />
         </button>
       </div>
 

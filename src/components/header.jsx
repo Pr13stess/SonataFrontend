@@ -1,4 +1,7 @@
 import "./header.css";
+import hamburgerIcon from "../assets/hamburger.svg";
+import searchIcon from "../assets/search.svg";
+import logoIcon from "../assets/logo.svg";
 
 function Header({
   onMenuClick,
@@ -16,7 +19,7 @@ function Header({
       {isSearchOpen ? (
         <div className="header-search">
           <div className="header-search__box">
-            <span className="search-icon header-search__icon"></span>
+            <img src={searchIcon} className="search-icon header-search__icon" alt="" />
             <input
               type="text"
               className="header-search__input"
@@ -51,13 +54,11 @@ function Header({
             onClick={onMenuClick}
             aria-label="Open menu"
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            <img src={hamburgerIcon} className="hamburger-icon" alt="" />
           </button>
 
           <div className="logo">
-            SONATA <span>♪</span>
+            <img src={logoIcon} className="logo-icon" alt="Sonata" />
           </div>
 
           <button
@@ -65,7 +66,7 @@ function Header({
             onClick={handleOpenSearch}
             aria-label="Search"
           >
-            <span className="search-icon"></span>
+            <img src={searchIcon} className="search-icon" alt="" />
           </button>
         </>
       )}
