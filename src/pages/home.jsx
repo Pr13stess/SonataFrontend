@@ -24,6 +24,24 @@ import {
   removeSongFromPlaylist,
 } from "../services/api";
 
+function formatDuration(seconds) {
+  if (!seconds) return "0:00";
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
+function toPlayableSong(song) {
+  return {
+    id: song.id,
+    title: song.title,
+    artist: song.artist,
+    duration: formatDuration(song.durationSeconds),
+    durationSeconds: song.durationSeconds,
+    cover: song.artworkPath || "/default-cover.jpg",
+  };
+}
+
 function Home() {
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
@@ -163,24 +181,37 @@ function Home() {
     }
   };
 
-  const handleNext = async () => {
-    try {
-      await nextSong();
-      // TODO: backend belum mengembalikan info lagu berikutnya,
-      // jadi currentSong di UI belum otomatis berpindah.
-    } catch (error) {
-      console.error("Gagal skip ke lagu berikutnya:", error);
-    }
-  };
+const handleNext = async () => {
+  if (!currentSong || allSongs.length === 0) return;
 
-  const handlePrevious = async () => {
-    try {
-      await previousSong();
-      // TODO: sama seperti handleNext, menunggu backend expose info lagu aktif.
-    } catch (error) {
-      console.error("Gagal kembali ke lagu sebelumnya:", error);
-    }
-  };
+  try {
+    await nextSong(); // beri tahu backend supaya audio maju
+
+    const currentIndex = allSongs.findIndex((s) => s.id === currentSong.id);
+    const nextIndex = (currentIndex + 1) % allSongs.length;
+    const nextRawSong = allSongs[nextIndex];
+
+    await handleSongPlay(toPlayableSong(nextRawSong));
+  } catch (error) {
+    console.error("Gagal skip ke lagu berikutnya:", error);
+  }
+};
+
+const handlePrevious = async () => {
+  if (!currentSong || allSongs.length === 0) return;
+
+  try {
+    await previousSong(); // beri tahu backend supaya audio mundur
+
+    const currentIndex = allSongs.findIndex((s) => s.id === currentSong.id);
+    const prevIndex = (currentIndex - 1 + allSongs.length) % allSongs.length;
+    const prevRawSong = allSongs[prevIndex];
+
+    await handleSongPlay(toPlayableSong(prevRawSong));
+  } catch (error) {
+    console.error("Gagal kembali ke lagu sebelumnya:", error);
+  }
+};
 
   const handleToggleLike = () => {
     setIsLiked((prev) => !prev); // FE-only, belum ada endpoint like di backend
